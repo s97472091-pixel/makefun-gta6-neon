@@ -3,16 +3,162 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Block Dodger</title>
-<style>
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #11141b; }
-  #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
-  /* Read aloud, never shown: the status line screen readers announce. */
-  #status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-</style>
+<title>SOLANA BAY — Open-World Coastal Crime</title>
+<link rel="stylesheet" href="./styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.min.js"
+  }
+}
+</script>
 </head>
 <body>
-<canvas id="game" aria-label="Block Dodger: move the paddle left and right to dodge falling blocks and catch coins"></canvas>
+<canvas id="game" aria-label="Solana Bay open-world 3D crime game"></canvas>
+<div id="damage-vignette"></div>
+<div id="crosshair" class="hidden"><span></span></div>
+
+<!-- In-game HUD -->
+<div id="hud" class="hidden">
+  <!-- Top Left: Minimap & District -->
+  <div id="minimap-wrap">
+    <canvas id="minimap" width="184" height="184"></canvas>
+    <div id="minimap-ring"></div>
+    <div id="district-pill">MIRAMAR STRIP</div>
+  </div>
+
+  <!-- Top Center: Objective Bar -->
+  <div id="objective-bar" class="hidden">
+    <div id="objective-tag">MISSION</div>
+    <div id="objective-text">Explore Solana Bay</div>
+    <div id="objective-dist"></div>
+  </div>
+
+  <!-- Top Right: Wanted, Cash, Health/Armor, Weapon -->
+  <div id="top-right">
+    <div id="wanted-stars" aria-label="Wanted level">
+      <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
+    </div>
+    <div id="evade-bar" class="hidden"><div id="evade-fill"></div></div>
+    <div id="cash-display">$500</div>
+    <div id="bars">
+      <div class="bar-row"><span class="bar-lbl">HP</span><div class="bar-track"><div id="hp-fill" style="width:100%"></div></div></div>
+      <div class="bar-row"><span class="bar-lbl">AR</span><div class="bar-track"><div id="armor-fill" style="width:40%"></div></div></div>
+    </div>
+    <div id="weapon-card">
+      <div id="weapon-name">9MM PISTOL</div>
+      <div id="weapon-ammo">12 / 60</div>
+    </div>
+  </div>
+
+  <!-- Bottom Left: Controls / Context Prompt -->
+  <div id="interact-prompt" class="hidden"></div>
+  <div id="controls-strip">
+    <span><b>WASD</b> Move/Drive</span>
+    <span><b>F</b> Enter/Steal Car</span>
+    <span><b>LMB</b> Shoot</span>
+    <span><b>1-4</b> Weapons</span>
+    <span><b>SPACE</b> Jump/Drift</span>
+    <span><b>M/ESC</b> Map &amp; Menu</span>
+  </div>
+
+  <!-- Bottom Center: Story Subtitle / Feed -->
+  <div id="dialogue-box" class="hidden">
+    <span id="dialogue-speaker">RICO</span>
+    <span id="dialogue-text"></span>
+  </div>
+  <div id="toast-feed"></div>
+
+  <!-- Bottom Right: Speedometer & Vehicle -->
+  <div id="vehicle-hud" class="hidden">
+    <div id="veh-name">SOLARA GT</div>
+    <div id="speed-row"><span id="speed-val">0</span><span id="speed-unit">MPH</span></div>
+    <div id="veh-hp-track"><div id="veh-hp-fill" style="width:100%"></div></div>
+  </div>
+</div>
+
+<!-- Title Screen Cover -->
+<div id="title-screen">
+  <div class="title-scrim"></div>
+  <div class="title-content">
+    <div class="title-eyebrow">OPEN-WORLD COASTAL CRIME</div>
+    <h1 class="title-logo">SOLANA<span>BAY</span></h1>
+    <p class="title-tagline">Steal the strip. Outrun the sirens. Own the coast.</p>
+    <div class="title-actions">
+      <button id="btn-play" class="btn-primary">PLAY SOLANA BAY</button>
+      <button id="btn-continue" class="btn-secondary hidden">CONTINUE CAREER</button>
+      <button id="btn-controls" class="btn-ghost">CONTROLS</button>
+    </div>
+    <div class="title-meta">
+      <span>4 DISTRICTS</span>
+      <span>&#8226;</span>
+      <span>6 STORY MISSIONS</span>
+      <span>&#8226;</span>
+      <span>5-STAR PURSUITS</span>
+      <span>&#8226;</span>
+      <span>6 VEHICLE CLASSES</span>
+    </div>
+  </div>
+  <div class="title-badge">MATEO REYES // EDITION</div>
+</div>
+
+<!-- Pause / City Map / Controls Modal -->
+<div id="pause-screen" class="modal hidden">
+  <div class="modal-card wide">
+    <div class="modal-header">
+      <h2>SOLANA BAY — CITY MAP &amp; MENU</h2>
+      <button id="btn-resume" class="btn-primary small">RESUME</button>
+    </div>
+    <div class="pause-grid">
+      <div class="pause-map-col">
+        <canvas id="full-map" width="320" height="320"></canvas>
+        <div class="map-legend">
+          <span><i class="dot player"></i>You</span>
+          <span><i class="dot mission"></i>Mission</span>
+          <span><i class="dot garage"></i>Respray Garage</span>
+          <span><i class="dot armory"></i>Armory</span>
+          <span><i class="dot cop"></i>SBPD</span>
+        </div>
+      </div>
+      <div class="pause-info-col">
+        <h3>CONTROLS</h3>
+        <ul class="key-list">
+          <li><b>W A S D / Arrows</b> Move on foot &amp; Drive</li>
+          <li><b>Mouse / Drag</b> Look around &amp; Aim (Click canvas for Pointer Lock)</li>
+          <li><b>Left Click</b> Fire weapon / Melee punch / Drive-by</li>
+          <li><b>Right Click</b> Zoom aim</li>
+          <li><b>F or E</b> Enter / Steal / Exit vehicle &amp; Interact</li>
+          <li><b>Space</b> Jump (on foot) / Handbrake Drift (in car)</li>
+          <li><b>Shift</b> Sprint (on foot) / Nitro boost (in car)</li>
+          <li><b>1 - 4 / Wheel</b> Switch weapons (Fists, Pistol, SMG, Shotgun)</li>
+          <li><b>R</b> Reload weapon &nbsp;|&nbsp; <b>H</b> Car horn &nbsp;|&nbsp; <b>V</b> Mute audio</li>
+        </ul>
+        <h3>PROGRESS</h3>
+        <div id="pause-stats" class="stats-grid"></div>
+        <div class="modal-footer">
+          <button id="btn-toggle-audio" class="btn-ghost small">AUDIO: ON</button>
+          <button id="btn-save-now" class="btn-secondary small">SAVE GAME</button>
+          <button id="btn-reset-save" class="btn-danger small">NEW CAREER</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Banner / End / Wasted / Busted / Mission Complete Overlay -->
+<div id="overlay-screen" class="modal hidden">
+  <div class="modal-card center">
+    <div id="overlay-kicker" class="overlay-kicker">MISSION ACCOMPLISHED</div>
+    <h2 id="overlay-title" class="overlay-title">SOLANA BAY</h2>
+    <p id="overlay-desc" class="overlay-desc"></p>
+    <div id="overlay-stats" class="stats-grid"></div>
+    <div class="overlay-actions">
+      <button id="btn-overlay-primary" class="btn-primary">CONTINUE</button>
+      <button id="btn-overlay-secondary" class="btn-ghost hidden">TITLE SCREEN</button>
+    </div>
+  </div>
+</div>
+
 <p id="status" role="status" aria-live="polite"></p>
 <script type="module" src="./src/main.js"></script>
 </body>
