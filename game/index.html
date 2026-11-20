@@ -14,7 +14,7 @@
 </script>
 </head>
 <body>
-<canvas id="game" aria-label="Solana Bay open-world 3D crime game"></canvas>
+<canvas id="game" aria-label="Solana Bay open-world 3D coastal crime game"></canvas>
 <div id="damage-vignette"></div>
 <div id="crosshair" class="hidden"><span></span></div>
 
@@ -23,8 +23,7 @@
   <!-- Top Left: Live Minimap & District -->
   <div id="minimap-wrap">
     <canvas id="minimap" width="184" height="184"></canvas>
-    <div id="minimap-ring"></div>
-    <div id="district-pill">MIRAMAR STRIP</div>
+    <div id="district-pill">CORAL PROMENADE</div>
   </div>
 
   <!-- Top Center: Objective Bar -->
@@ -40,13 +39,13 @@
       <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
     </div>
     <div id="evade-bar" class="hidden"><div id="evade-fill"></div></div>
-    <div id="cash-display">$500</div>
+    <div id="cash-display">$650</div>
     <div id="bars">
       <div class="bar-row"><span class="bar-lbl">HP</span><div class="bar-track"><div id="hp-fill" style="width:100%"></div></div></div>
-      <div class="bar-row"><span class="bar-lbl">AR</span><div class="bar-track"><div id="armor-fill" style="width:40%"></div></div></div>
+      <div class="bar-row"><span class="bar-lbl">AR</span><div class="bar-track"><div id="armor-fill" style="width:45%"></div></div></div>
     </div>
     <div id="weapon-card">
-      <div id="weapon-name">M9 COASTAL</div>
+      <div id="weapon-name">MARLIN 9MM</div>
       <div id="weapon-ammo">12 / 60</div>
     </div>
   </div>
@@ -55,23 +54,23 @@
   <div id="interact-prompt" class="hidden"></div>
   <div id="controls-strip">
     <span><b>WASD</b> Move/Drive</span>
-    <span><b>F/E</b> Steal/Interact</span>
+    <span><b>F/E</b> Steal/Bay</span>
     <span><b>LMB</b> Shoot</span>
     <span><b>1-4</b> Weapons</span>
     <span><b>SPACE</b> Jump/Drift</span>
-    <span><b>M/ESC</b> Map &amp; Menu</span>
+    <span><b>M/ESC</b> Map</span>
   </div>
 
   <!-- Bottom Center: Story Subtitles & Toast Feed -->
   <div id="dialogue-box" class="hidden">
-    <span id="dialogue-speaker">SORA</span>
+    <span id="dialogue-speaker">ELENA NAVARRO</span>
     <span id="dialogue-text"></span>
   </div>
   <div id="toast-feed"></div>
 
   <!-- Bottom Right: Speedometer & Vehicle HP -->
   <div id="vehicle-hud" class="hidden">
-    <div id="veh-name">SOLARA GT</div>
+    <div id="veh-name">RIPTIDE GT</div>
     <div id="speed-row"><span id="speed-val">0</span><span id="speed-unit">MPH</span></div>
     <div id="veh-hp-track"><div id="veh-hp-fill" style="width:100%"></div></div>
   </div>
@@ -83,11 +82,11 @@
   <div class="title-content">
     <div class="title-eyebrow">OPEN-WORLD COASTAL CRIME</div>
     <h1 class="title-logo">SOLANA<span>BAY</span></h1>
-    <p class="title-tagline">Steal the strip. Outrun the sirens. Take back the coast.</p>
+    <p class="title-tagline">Burn rubber down Coral Promenade. Outrun SBPD. Take back the harbor.</p>
     <div class="title-actions">
       <button id="btn-play" class="btn-primary">PLAY SOLANA BAY</button>
       <button id="btn-continue" class="btn-secondary hidden">CONTINUE CAREER</button>
-      <button id="btn-controls" class="btn-ghost">CONTROLS</button>
+      <button id="btn-controls" class="btn-ghost">CITY MAP &amp; CONTROLS</button>
     </div>
     <div class="title-meta">
       <span>4 DISTRICTS</span>
@@ -99,7 +98,7 @@
       <span>6 VEHICLE CLASSES</span>
     </div>
   </div>
-  <div class="title-badge">DANTE VEGA // SOLANA BAY</div>
+  <div class="title-badge">MARCO REYES // SOLANA BAY</div>
 </div>
 
 <!-- Pause / City Map / Controls Modal -->
@@ -115,7 +114,7 @@
         <div class="map-legend">
           <span><i class="dot player"></i>You</span>
           <span><i class="dot mission"></i>Mission</span>
-          <span><i class="dot garage"></i>El Sol Customs</span>
+          <span><i class="dot garage"></i>Palma Spray</span>
           <span><i class="dot armory"></i>Ironworks Armory</span>
           <span><i class="dot cop"></i>SBPD</span>
         </div>
@@ -127,10 +126,10 @@
           <li><b>Mouse / Drag</b> Look around &amp; Aim (Click canvas for Pointer Lock)</li>
           <li><b>Left Click</b> Fire weapon / Melee punch / Drive-by</li>
           <li><b>Right Click</b> Zoom aim</li>
-          <li><b>F or E</b> Enter / Steal / Exit vehicle &amp; Use Garage / Armory</li>
+          <li><b>F or E</b> Enter / Steal / Exit vehicle &amp; Use Palma Spray / Armory</li>
           <li><b>Space</b> Jump (on foot) / Handbrake Drift (in car)</li>
-          <li><b>Shift</b> Sprint (on foot) / Nitro boost (in car)</li>
-          <li><b>1 - 4 / Wheel</b> Switch weapons (Fists, M9 Coastal, Viper SMG, Breacher 12G)</li>
+          <li><b>Shift</b> Sprint (on foot) / Turbo boost (in car)</li>
+          <li><b>1 - 4 / Wheel</b> Switch weapons (Fists, Marlin 9mm, Tidebreaker SMG, Reef 12G)</li>
           <li><b>R</b> Reload &nbsp;|&nbsp; <b>H</b> Horn &nbsp;|&nbsp; <b>V</b> Mute audio</li>
         </ul>
         <h3>CAREER STATS</h3>
@@ -148,7 +147,7 @@
 <!-- Wasted / Busted / Victory Overlay -->
 <div id="overlay-screen" class="modal hidden">
   <div class="modal-card center">
-    <div id="overlay-kicker" class="overlay-kicker">MISSION ACCOMPLISHED</div>
+    <div id="overlay-kicker" class="overlay-kicker">SOLANA BAY</div>
     <h2 id="overlay-title" class="overlay-title">SOLANA BAY</h2>
     <p id="overlay-desc" class="overlay-desc"></p>
     <div id="overlay-stats" class="stats-grid"></div>
