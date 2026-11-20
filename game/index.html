@@ -1,19 +1,183 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Block Dodger</title>
-<style>
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #11141b; }
-  #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
-  /* Read aloud, never shown: the status line screen readers announce. */
-  #status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solana Bay</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.module.min.js"
+      }
+    }
+  </script>
 </head>
 <body>
-<canvas id="game" aria-label="Block Dodger: move the paddle left and right to dodge falling blocks and catch coins"></canvas>
-<p id="status" role="status" aria-live="polite"></p>
-<script type="module" src="./src/main.js"></script>
+  <canvas id="game" aria-label="Solana Bay open-world coastal crime game"></canvas>
+  <div id="hud-speedlines"></div>
+
+  <!-- Live Gameplay HUD -->
+  <div id="hud" class="hidden">
+    <div id="hud-crosshair"></div>
+
+    <!-- Top-Left: Mission Stage + SBPD Tactical Dispatch -->
+    <div class="hud-top-left">
+      <div id="hud-mission-panel" class="hud-box">
+        <div class="mission-top">
+          <span id="hud-mission-header">MISSION 1 · SALT &amp; STATIC</span>
+          <span id="hud-mission-stage">ACT I · STAGE 1/3</span>
+        </div>
+        <div id="hud-mission-objective">Meet Nori at Solana Marina Pier</div>
+        <div id="hud-mission-next">NEXT: Grab the syndicate courier crate</div>
+      </div>
+
+      <div id="hud-dispatch-panel" class="hud-box hidden">
+        <div class="dispatch-head">
+          <span id="hud-dispatch-code">SBPD DISPATCH · CODE 3</span>
+          <span id="hud-dispatch-air">STANDBY</span>
+        </div>
+        <div id="hud-dispatch-units"></div>
+        <div id="hud-dispatch-logs"></div>
+      </div>
+    </div>
+
+    <!-- Top-Center: Race HUD & Toast Feed -->
+    <div class="hud-top-center">
+      <div id="hud-race-panel" class="hud-box hidden">
+        <span id="hud-race-pos">POS 1/4</span>
+        <span id="hud-race-cp">CP 1/8</span>
+        <span id="hud-race-time">00:00.0</span>
+      </div>
+      <div id="hud-toast-feed"></div>
+    </div>
+
+    <!-- Top-Right: Cash, Clock, Wanted Stars, Rank Bar, Weapon Slots -->
+    <div class="hud-top-right">
+      <div class="hud-box top-status-card">
+        <div class="status-row-top">
+          <span id="hud-cash">₮1,250</span>
+          <span id="hud-clock">13:00</span>
+        </div>
+        <div class="wanted-row">
+          <div id="hud-wanted-stars"></div>
+          <span id="hud-wanted-sub" class="wanted-sub"></span>
+        </div>
+        <div class="rank-wrap">
+          <div class="rank-row">
+            <span id="hud-rank-title">LVL 2 · WHEELMAN</span>
+            <span id="hud-rank-rp">420 RP</span>
+          </div>
+          <div class="bar-track"><div id="hud-rank-bar" class="bar-fill"></div></div>
+        </div>
+      </div>
+
+      <div id="hud-weapon-slots"></div>
+    </div>
+
+    <!-- Bottom-Left: Live Minimap, District Standing, Health & Armor -->
+    <div class="hud-bottom-left">
+      <div class="hud-box minimap-frame">
+        <canvas id="minimap-canvas" width="210" height="148"></canvas>
+        <div class="district-bar">
+          <span id="hud-district-name">MIRAMAR COAST</span>
+          <span id="hud-district-standing">FRIENDLY · 62</span>
+        </div>
+        <div class="vitals-grid">
+          <div class="vital-item">
+            <div class="vital-head"><span>HP</span><span id="hud-health-val">100</span></div>
+            <div class="bar-track"><div id="hud-health-bar" class="bar-fill"></div></div>
+          </div>
+          <div class="vital-item">
+            <div class="vital-head"><span>ARMOR</span><span id="hud-armor-val">60</span></div>
+            <div class="bar-track"><div id="hud-armor-bar" class="bar-fill"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom-Center: Interact Prompt & Dialogue Subtitle -->
+    <div class="hud-bottom-center">
+      <div id="hud-interact-hint" class="hidden"></div>
+      <div id="hud-dialogue" class="hud-box hidden">
+        <img id="hud-dialogue-portrait" alt="Crew speaker portrait">
+        <div>
+          <div id="hud-dialogue-speaker">NORI TANAKA</div>
+          <div id="hud-dialogue-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom-Right: Speedometer/Radio + Crew Ability Strip -->
+    <div class="hud-bottom-right">
+      <div id="hud-vehicle-panel" class="hud-box hidden">
+        <div class="speed-cluster">
+          <span id="hud-speed-val">0</span>
+          <span class="speed-unit">MPH</span>
+        </div>
+        <div class="veh-meta">
+          <div id="hud-vehicle-name">VELOCE R8</div>
+          <div class="bar-track"><div id="hud-vehicle-cond-bar" class="bar-fill"></div></div>
+          <div id="hud-radio-code">SOL 98.4 · Coastal Synth</div>
+          <div id="hud-radio-track">♪ Neon Tide [Q]</div>
+        </div>
+      </div>
+
+      <div id="hud-crew-panel"></div>
+    </div>
+  </div>
+
+  <!-- Sunset Title Screen -->
+  <div id="title-screen" class="hidden">
+    <div class="title-top">
+      <div class="title-logo-wrap">
+        <div class="eyebrow">FIVE DISTRICTS · ONE COASTLINE · ZERO MERCY</div>
+        <h1 class="title-logo">SOLANA BAY</h1>
+        <div class="title-tagline">Rule the boardwalk, run Pasar Senja after dark, and outdrive SBPD Air-One across five coastal districts.</div>
+      </div>
+    </div>
+
+    <div class="title-main-row">
+      <div class="title-menu">
+        <button id="btn-continue" class="title-btn primary">CONTINUE CAREER</button>
+        <button id="btn-new-game" class="title-btn">NEW GAME</button>
+        <button id="btn-load-game" class="title-btn">LOAD GAME</button>
+        <button id="btn-title-settings" class="title-btn">SETTINGS</button>
+      </div>
+
+      <div class="title-slots-wrap">
+        <div class="slots-label">CAREER SAVE SLOTS</div>
+        <div id="title-slots"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pause Menu (MAP / STORY / STATS / CREW / SETTINGS) -->
+  <div id="pause-menu" class="hidden">
+    <div class="pause-header">
+      <div class="pause-brand">SOLANA BAY · CAREER</div>
+      <div id="pause-tabs">
+        <button class="tab-btn" data-tab="MAP">MAP</button>
+        <button class="tab-btn" data-tab="STORY">STORY</button>
+        <button class="tab-btn active" data-tab="STATS">STATS</button>
+        <button class="tab-btn" data-tab="CREW">CREW</button>
+        <button class="tab-btn" data-tab="SETTINGS">SETTINGS</button>
+      </div>
+      <div class="pause-actions">
+        <button id="pause-resume-btn" class="mini-btn">RESUME</button>
+        <button id="pause-title-btn" class="mini-btn alt">TITLE</button>
+      </div>
+    </div>
+    <div id="pause-body"></div>
+  </div>
+
+  <!-- Wasted / Busted / Victory Overlay -->
+  <div id="state-overlay" class="state-overlay hidden">
+    <div id="overlay-title">WASTED</div>
+    <div id="overlay-sub">You went down in Solana Bay.</div>
+    <button id="overlay-btn">RESPAWN</button>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>

@@ -1,3 +1,7 @@
+// Solana Bay v3 — open-world coastal crime game for make.fun gta6-01.
+// Entrypoint that bundles game/ and screenshots/ into the output directory
+// and generates dossier.json for the make.fun judge.
+
 // A working gta6-01 entry (Node 22, standard library only): the game is this directory's
 // game/ folder, plain static files a desktop browser loads offline (game/index.html and its ES
 // modules, no library and no network request), and the program hands it in. It copies game/ and
