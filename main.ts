@@ -1,7 +1,3 @@
-// Solana Bay — an original open-world coastal crime game built for make.fun gta6-01.
-// Entrypoint that packages the offline static game/ bundle and screenshots/ into the output directory
-// and writes the submission dossier via the vendored makefun-game helper.
-//
 // A working gta6-01 entry (Node 22, standard library only): the game is this directory's
 // game/ folder, plain static files a desktop browser loads offline (game/index.html and its ES
 // modules, no library and no network request), and the program hands it in. It copies game/ and
