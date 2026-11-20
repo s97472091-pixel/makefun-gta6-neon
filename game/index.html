@@ -20,7 +20,7 @@
 
 <!-- In-game HUD -->
 <div id="hud" class="hidden">
-  <!-- Top Left: Minimap & District -->
+  <!-- Top Left: Live Minimap & District -->
   <div id="minimap-wrap">
     <canvas id="minimap" width="184" height="184"></canvas>
     <div id="minimap-ring"></div>
@@ -29,12 +29,12 @@
 
   <!-- Top Center: Objective Bar -->
   <div id="objective-bar" class="hidden">
-    <div id="objective-tag">MISSION</div>
+    <div id="objective-tag">MISSION 1 / 6</div>
     <div id="objective-text">Explore Solana Bay</div>
     <div id="objective-dist"></div>
   </div>
 
-  <!-- Top Right: Wanted, Cash, Health/Armor, Weapon -->
+  <!-- Top Right: Wanted, Evade, Cash, Health/Armor, Weapon -->
   <div id="top-right">
     <div id="wanted-stars" aria-label="Wanted level">
       <span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span><span class="star">&#9733;</span>
@@ -46,30 +46,30 @@
       <div class="bar-row"><span class="bar-lbl">AR</span><div class="bar-track"><div id="armor-fill" style="width:40%"></div></div></div>
     </div>
     <div id="weapon-card">
-      <div id="weapon-name">9MM PISTOL</div>
+      <div id="weapon-name">M9 COASTAL</div>
       <div id="weapon-ammo">12 / 60</div>
     </div>
   </div>
 
-  <!-- Bottom Left: Controls / Context Prompt -->
+  <!-- Bottom Left: Context Prompt & Controls -->
   <div id="interact-prompt" class="hidden"></div>
   <div id="controls-strip">
     <span><b>WASD</b> Move/Drive</span>
-    <span><b>F</b> Enter/Steal Car</span>
+    <span><b>F/E</b> Steal/Interact</span>
     <span><b>LMB</b> Shoot</span>
     <span><b>1-4</b> Weapons</span>
     <span><b>SPACE</b> Jump/Drift</span>
     <span><b>M/ESC</b> Map &amp; Menu</span>
   </div>
 
-  <!-- Bottom Center: Story Subtitle / Feed -->
+  <!-- Bottom Center: Story Subtitles & Toast Feed -->
   <div id="dialogue-box" class="hidden">
-    <span id="dialogue-speaker">RICO</span>
+    <span id="dialogue-speaker">SORA</span>
     <span id="dialogue-text"></span>
   </div>
   <div id="toast-feed"></div>
 
-  <!-- Bottom Right: Speedometer & Vehicle -->
+  <!-- Bottom Right: Speedometer & Vehicle HP -->
   <div id="vehicle-hud" class="hidden">
     <div id="veh-name">SOLARA GT</div>
     <div id="speed-row"><span id="speed-val">0</span><span id="speed-unit">MPH</span></div>
@@ -83,7 +83,7 @@
   <div class="title-content">
     <div class="title-eyebrow">OPEN-WORLD COASTAL CRIME</div>
     <h1 class="title-logo">SOLANA<span>BAY</span></h1>
-    <p class="title-tagline">Steal the strip. Outrun the sirens. Own the coast.</p>
+    <p class="title-tagline">Steal the strip. Outrun the sirens. Take back the coast.</p>
     <div class="title-actions">
       <button id="btn-play" class="btn-primary">PLAY SOLANA BAY</button>
       <button id="btn-continue" class="btn-secondary hidden">CONTINUE CAREER</button>
@@ -99,7 +99,7 @@
       <span>6 VEHICLE CLASSES</span>
     </div>
   </div>
-  <div class="title-badge">MATEO REYES // EDITION</div>
+  <div class="title-badge">DANTE VEGA // SOLANA BAY</div>
 </div>
 
 <!-- Pause / City Map / Controls Modal -->
@@ -115,8 +115,8 @@
         <div class="map-legend">
           <span><i class="dot player"></i>You</span>
           <span><i class="dot mission"></i>Mission</span>
-          <span><i class="dot garage"></i>Respray Garage</span>
-          <span><i class="dot armory"></i>Armory</span>
+          <span><i class="dot garage"></i>El Sol Customs</span>
+          <span><i class="dot armory"></i>Ironworks Armory</span>
           <span><i class="dot cop"></i>SBPD</span>
         </div>
       </div>
@@ -127,13 +127,13 @@
           <li><b>Mouse / Drag</b> Look around &amp; Aim (Click canvas for Pointer Lock)</li>
           <li><b>Left Click</b> Fire weapon / Melee punch / Drive-by</li>
           <li><b>Right Click</b> Zoom aim</li>
-          <li><b>F or E</b> Enter / Steal / Exit vehicle &amp; Interact</li>
+          <li><b>F or E</b> Enter / Steal / Exit vehicle &amp; Use Garage / Armory</li>
           <li><b>Space</b> Jump (on foot) / Handbrake Drift (in car)</li>
           <li><b>Shift</b> Sprint (on foot) / Nitro boost (in car)</li>
-          <li><b>1 - 4 / Wheel</b> Switch weapons (Fists, Pistol, SMG, Shotgun)</li>
-          <li><b>R</b> Reload weapon &nbsp;|&nbsp; <b>H</b> Car horn &nbsp;|&nbsp; <b>V</b> Mute audio</li>
+          <li><b>1 - 4 / Wheel</b> Switch weapons (Fists, M9 Coastal, Viper SMG, Breacher 12G)</li>
+          <li><b>R</b> Reload &nbsp;|&nbsp; <b>H</b> Horn &nbsp;|&nbsp; <b>V</b> Mute audio</li>
         </ul>
-        <h3>PROGRESS</h3>
+        <h3>CAREER STATS</h3>
         <div id="pause-stats" class="stats-grid"></div>
         <div class="modal-footer">
           <button id="btn-toggle-audio" class="btn-ghost small">AUDIO: ON</button>
@@ -145,7 +145,7 @@
   </div>
 </div>
 
-<!-- Banner / End / Wasted / Busted / Mission Complete Overlay -->
+<!-- Wasted / Busted / Victory Overlay -->
 <div id="overlay-screen" class="modal hidden">
   <div class="modal-card center">
     <div id="overlay-kicker" class="overlay-kicker">MISSION ACCOMPLISHED</div>
